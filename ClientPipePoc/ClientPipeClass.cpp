@@ -5,7 +5,7 @@
 ClientPipeClass::ClientPipeClass()
 {
 	this->fSuccess = FALSE;
-	this->lpvMessage = TEXT("Default message from client");
+	this->lpvMessage = TEXT("2");
 	this->lpszPipename = TEXT("\\\\.\\pipe\\namedPipeExample");
 }
 
@@ -58,10 +58,12 @@ int ClientPipeClass::tryToOpenPipe()
 	return retVal;
 }
 
-int ClientPipeClass::sendMessageToServer()
+int ClientPipeClass::sendMessageToServer(int numberToSend)
 {
 	int retValue = 0;
 	this->dwMode = PIPE_READMODE_MESSAGE;
+	TCHAR buf[BUFSIZE];
+	swprintf_s(buf, BUFSIZE, TEXT("%d"), numberToSend);
 	this->fSuccess = SetNamedPipeHandleState(this->hPipe, &dwMode , NULL, NULL);
 
 	if (this->fSuccess != TRUE)
@@ -72,9 +74,9 @@ int ClientPipeClass::sendMessageToServer()
 	}
 	else
 	{
-		this->cbToWrite = (lstrlen(lpvMessage) + 1) * sizeof(TCHAR);
-		_tprintf(TEXT("Sending %d byte message: \"%s\"\n"), cbToWrite, lpvMessage);
-		this->fSuccess = WriteFile(this->hPipe, this->lpvMessage, this->cbToWrite, &(this->cbWritten), NULL);
+		this->cbToWrite = (lstrlen(buf) + 1) * sizeof(TCHAR);
+		_tprintf(TEXT("Sending %d byte message: \"%s\"\n"), cbToWrite, buf);
+		this->fSuccess = WriteFile(this->hPipe, buf, this->cbToWrite, &(this->cbWritten), NULL);
 
 		if (this->fSuccess != TRUE)
 		{
