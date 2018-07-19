@@ -21,7 +21,7 @@ public:
 
 	int tryToOpenPipe();
 	int readFromServer();
-	int sendMessageToServer();
+	int sendMessageToServer(int numberToSend);
 
 protected:
 
